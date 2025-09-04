@@ -75,5 +75,5 @@ You can use these commands to select, load and run an image:
 fatload mmc 0 0x10000000 <SYSTEM IMAGE>
 go 0x10000000
 ```
-<br>
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
