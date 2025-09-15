@@ -59,9 +59,8 @@ Copy the u-boot.bin file into the boot partition.
 
 ### RPI Device Tree + Overlays
 The bootloader needs to know what kind of hardware exists on our device (the RPI), this is described using a device tree and overlays (overlays are patches applied to a base device tree, for example if you disable bluetooth in the later 'config.txt', then the disable-bt overlay will also get used).
-The rpi4B device tree is found [here](https://github.com/raspberrypi/firmware/blob/master/boot/bcm2711-rpi-4-b.dtb).
-The overlays folder is found [here](https://github.com/raspberrypi/firmware/tree/master/boot/overlays).
-Copy the base device tree, then the overlays folder into the boot partition.
+<br>The rpi4B device tree is found [here](https://github.com/raspberrypi/firmware/blob/master/boot/bcm2711-rpi-4-b.dtb). The overlays folder is found [here](https://github.com/raspberrypi/firmware/tree/master/boot/overlays).
+<br>Copy the base device tree, then the overlays folder into the boot partition.
 
 ### Boot config
 During boot the RPI firmware will perform setup based on options in the 'config.txt' file, for our case we need at least these 3 options:
@@ -73,8 +72,10 @@ enable_uart=1
 Create/copy the config.txt file in the boot partition.
 
 ### sel4/Mirage Images
-Now you can add any images you want to run/use into the boot partition (i.e. your sel4/Mirage images). 
-File setup is complete; make sure to eject the SD card safely, then you can place it in the RPI.
+Now you can add any files you want to run/use into the boot partition (i.e. your sel4/Mirage images). 
+<br>File setup is complete; make sure to eject the SD card safely, then you can place it in the RPI.
+
+Example SD card setup:
 
 ![Example SD card files](res/example-files.png)
 
@@ -108,3 +109,4 @@ go 0x10000000
 ```
 
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
