@@ -33,30 +33,50 @@ with a compatible format like ext4.
 
 ![Example SD card formatting](res/example-format.png)
 
-Next, the boot partion needs to contain a few specific files, this consist of 
-//relevant files
-//link github
-//say in folder have minimum files for a rpi4b
-//Drag in images
+Next, the boot partion needs to contain a few specific files, namely:
+- Basic firmware
+- A bootloader
+- RPI device tree
+- Overlays
+- Boot config
+- sel4/Mirage images
 
-Our sel4/Mirage system images can't be booted directly by hardware, we need a bootloader, which will setup the device and then allow us to load our image, a good choice is U-Boot. You can find prebuilt U-Boot images on the internet, or quickly build it yourself with the below commands, the result should be a u-boot.bin file.
+A ready minimum-set of these files is available in the '/sd-files' folder, you can copy them into the SD card and skip to the 'sel4/Mirage Images' subsection, but I recommend getting them manually (e.g. to get newest versions):
+
+### Basic Firmware
+Two firmware executables are required, found [here](https://github.com/raspberrypi/firmware/blob/master/boot/start4.elf) and [here](https://github.com/raspberrypi/firmware/blob/master/boot/fixup4.dat).
+Copy them into the boot partition.
+
+### Bootloader
+Our sel4/Mirage system images can't be booted directly by hardware, we need a bootloader, which will allow us to load our images, a good choice is U-Boot. You can find prebuilt U-Boot images on the internet, or quickly build it yourself with the below commands (you may need a aarch64-bare-metal compiler), the result should be a u-boot.bin file.
 ```bash
 git clone https://github.com/u-boot/u-boot.git u-boot
 cd u-boot
 make CROSS_COMPILE=aarch64-linux-gnu- rpi_4_defconfig
 make CROSS_COMPILE=aarch64-linux-gnu-
 ```
-Add the u-boot.bin file to the boot partition.
+Copy the u-boot.bin file into the boot partition.
 
-Next, we need a config.txt file, during boot the RPI will setup based on settings in the config.txt file, for our case we need at least these 3 options:
+### RPI Device Tree + Overlays
+The bootloader needs to know what kind of hardware exists on our device (the RPI), this is described using a device tree and overlays (overlays are patches applied to a base device tree, for example if you disable bluetooth in the later 'config.txt', then the disable-bt overlay will also get used).
+The rpi4B device tree is found [here](https://github.com/raspberrypi/firmware/blob/master/boot/bcm2711-rpi-4-b.dtb).
+The overlays folder is found [here](https://github.com/raspberrypi/firmware/tree/master/boot/overlays).
+Copy the base device tree, then the overlays folder into the boot partition.
+
+### Boot config
+During boot the RPI firmware will perform setup based on options in the 'config.txt' file, for our case we need at least these 3 options:
 ```
 arm_64bit=1
 kernel=u-boot.bin
 enable_uart=1
 ```
-Create/copy the config.txt file into the boot partition.
+Create/copy the config.txt file in the boot partition.
 
-Now you can add any images you want to run/use into the boot partition (i.e. your sel4/Mirage images), and file setup is complete; the SD card can be placed in the RPI.
+### sel4/Mirage Images
+Now you can add any images you want to run/use into the boot partition (i.e. your sel4/Mirage images). 
+File setup is complete; make sure to eject the SD card safely, then you can place it in the RPI.
+
+![Example SD card files](res/example-files.png)
 
 ## Input/Output
 U-Boot can be used over the UART (serial) of the RPI 4B or using a keyboard and monitor plugged directly into the RPI.<br>
