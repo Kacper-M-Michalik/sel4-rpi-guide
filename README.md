@@ -9,19 +9,19 @@ Additional details can be found at: https://docs.sel4.systems/Hardware/
 Building and running a sel4 based system requires a number of steps, here we go through all the steps to see a sel4 system run on a RPI 4B 4GB, similiar if not identical steps are done on other RPI platforms.
 
 ## Building
-sel4/Microkit need to know how much memory a device has at compile time, as such when building sel4 based images (programs to run on your RPI), you need to select the correct platform settings.
+sel4/Microkit need to know certain information about the target platform at compile time (e.g. memory size), as such when building sel4 based images (programs to run on your RPI), you need to select the correct platform or platform settings.
 
-For the sel4 build system (this only applies if building the microkernel yourself) the minimal defines are below, as seen in this sel4Test build step for a RPI4B 4GB:
+If you are building the sel4 microkernel itself, the minimal arguments are below, as seen in this sel4Test build step for a RPI4B 4GB:
 ```bash
 ../init-build.sh -DPLATFORM=rpi4 -DAARCH64=1 -DRPI4_MEMORY=4096
 ```
 
-For Microkit, the build system is left completely up to the user, but common convention will have your build arguments look like this:
+If you are building Microkit based projects, Microkit leaves the build system entirely to the user, so you will need to read the project build instructions, but common convention will have your build arguments look like this:
 ```bash
 make BUILD_DIR=build MICROKIT_BOARD=rpi4b_4gb MICROKIT_CONFIG=debug MICROKIT_SDK=./../microkit-sdk-2.0.1
 ```
 Note that you only need to select the correct MICROKIT_BOARD, Microkit builds sel4 for you with appropriate settings.
-Usually the resulting image will be 'loader.img', found in your build directory.
+The result of building a Microkit system should be an image (.img) file, which can be used below.
 
 ## Filesystem
 Once you have built the image(s) you want to run, you will need to setup the correct files on a SD card, which the RPI will use to boot.
@@ -44,8 +44,8 @@ Next, the boot partion needs to contain a few specific files, namely:
 A ready minimum-set of these files is available in the '/sd-files' folder, you can copy them into the SD card and skip to the 'sel4/Mirage Images' subsection, but I recommend getting them manually (e.g. to get newest versions):
 
 ### Basic Firmware
-Two firmware executables are required, found [here](https://github.com/raspberrypi/firmware/blob/master/boot/start4.elf) and [here](https://github.com/raspberrypi/firmware/blob/master/boot/fixup4.dat).
-Copy them into the boot partition.
+Two firmware files are required, found [here](https://github.com/raspberrypi/firmware/blob/master/boot/start4.elf) and [here](https://github.com/raspberrypi/firmware/blob/master/boot/fixup4.dat).
+<br>Copy them into the boot partition.
 
 ### Bootloader
 Our sel4/Mirage system images can't be booted directly by hardware, we need a bootloader, which will allow us to load our images, a good choice is U-Boot. You can find prebuilt U-Boot images on the internet, or quickly build it yourself with the below commands (you may need a aarch64-bare-metal compiler), the result should be a u-boot.bin file.
@@ -90,6 +90,7 @@ plug in the usb to your computer, verify the adapter is recognised as a COM port
 
 For PUTTY, use the following settings:
 - Connection Type: Serial
+- Serial line: The name the serial appears as (e.g. COM3)
 - Speed: 115200
 - Everything else: Leave as default
 
@@ -109,4 +110,5 @@ go 0x10000000
 ```
 
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
 
