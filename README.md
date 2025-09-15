@@ -48,13 +48,13 @@ make CROSS_COMPILE=aarch64-linux-gnu-
 ```
 Add the u-boot.bin file to the boot partition.
 
-Next, we need a config.txt file, during boot the RPI will betup based on settings in the config.txt file, for our case we need at least these 3 options:
+Next, we need a config.txt file, during boot the RPI will setup based on settings in the config.txt file, for our case we need at least these 3 options:
 ```
 arm_64bit=1
 kernel=u-boot.bin
 enable_uart=1
 ```
-Create/copy in the config.txt file into the boot partition.
+Create/copy the config.txt file into the boot partition.
 
 Now you can add any images you want to run/use into the boot partition (i.e. your sel4/Mirage images), and file setup is complete; the SD card can be placed in the RPI.
 
@@ -86,4 +86,5 @@ You can use these commands to select, load and run an image:
 fatload mmc 0 0x10000000 <SYSTEM IMAGE>
 go 0x10000000
 ```
+
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
