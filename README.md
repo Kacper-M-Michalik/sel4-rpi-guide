@@ -26,31 +26,42 @@ Usually the resulting image will be 'loader.img', found in your build directory.
 ## Filesystem
 Once you have built the image(s) you want to run, you will need to setup the correct files on a SD card, which the RPI will use to boot.
 
-Starting with an empty SD card, you will need to create a FAT32 boot partition, this partition is where the RPI firmware will search
-for a boot-config, a bootloader, device tree files, etc.<br>
+Starting with an empty SD card, you will need to create a FAT32 boot partition, this partition is where the RPI firmware will search for a boot-config, a bootloader, device tree files, etc.
+<br>
 If you want Linux (if its running as a VM in your sel4 system) to access storage on the SD card, you will need to add another partition
 with a compatible format like ext4.
 
+![Example SD card formatting](res/example-format.png)
+
+Next, the boot partion needs to contain a few specific files, this consist of 
 //relevant files
 //link github
 //say in folder have minimum files for a rpi4b
+//Drag in images
 
-//build u boot
+Our sel4/Mirage system images can't be booted directly by hardware, we need a bootloader, which will setup the device and then allow us to load our image, a good choice is U-Boot. You can find prebuilt U-Boot images on the internet, or quickly build it yourself with the below commands, the result should be a u-boot.bin file.
 ```bash
 git clone https://github.com/u-boot/u-boot.git u-boot
 cd u-boot
 make CROSS_COMPILE=aarch64-linux-gnu- rpi_4_defconfig
 make CROSS_COMPILE=aarch64-linux-gnu-
 ```
-//drag in
+Add the u-boot.bin file to the boot partition.
 
-//config.txt
-//drag in images
+Next, we need a config.txt file, during boot the RPI will betup based on settings in the config.txt file, for our case we need at least these 3 options:
+```
+arm_64bit=1
+kernel=u-boot.bin
+enable_uart=1
+```
+Create/copy in the config.txt file into the boot partition.
+
+Now you can add any images you want to run/use into the boot partition (i.e. your sel4/Mirage images), and file setup is complete; the SD card can be placed in the RPI.
 
 ## Input/Output
-U-boot can be used over the UART (serial) of the RPI 4B or using a keyboard and monitor plugged directly into the RPI.<br>
-The UART is the preferred method; on the RPI 4B the sel4 microkernel outputs all debug info to the UART, and many systems (like Microkit) 
-will also use the UART for both debug and regular output (like from printf), where serial output cannot be seen from the u-boot console.
+U-Boot can be used over the UART (serial) of the RPI 4B or using a keyboard and monitor plugged directly into the RPI.<br>
+The UART is the preferred method; on the RPI 4B the sel4 microkernel outputs all debug info to the UART, and many systems (like Microkit/SDDF) 
+will use the UART for both debug and console output (like from printf), where UART output cannot be seen from the U-Boot console.
 
 To use the primary UART on the RPI 4B, you will need to plug in serial pins to pins 6 (GND), 8 (TXD) and 10 (RXD). 
 If you want to see the serial output on your computer, you will require a serial-to-USB adapter; plug in the serial pins to the RPI as above, 
@@ -71,9 +82,8 @@ fatls mmc 0
 
 sel4 images built for RPI 4B need to be loaded at a specific address in memory. 
 You can use these commands to select, load and run an image:
-``` bash
+```bash
 fatload mmc 0 0x10000000 <SYSTEM IMAGE>
 go 0x10000000
 ```
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
-
