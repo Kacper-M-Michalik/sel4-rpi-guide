@@ -8,7 +8,7 @@ Additional details can be found at: https://docs.sel4.systems/Hardware/
 
 Building and running a sel4 based system requires a number of steps, here we go through all the steps to see a sel4 system run on a RPI 4B 4GB, similiar if not identical steps are done on other RPI platforms.
 
-## Building
+## Building sel4 Images
 sel4/Microkit need to know certain information about the target platform at compile time (e.g. memory size), as such when building sel4 based images (programs to run on your RPI), you need to select the correct platform or platform settings.
 
 If you are building the sel4 microkernel itself, the minimal arguments are below, as seen in this sel4Test build step for a RPI4B 4GB:
@@ -110,5 +110,6 @@ go 0x10000000
 ```
 
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
 
 
