@@ -87,6 +87,7 @@ The UART is the preferred method; on the RPI 4B the sel4 microkernel outputs all
 will use the UART for both debug and console output (like from printf), where UART output cannot be seen from the U-Boot console.
 
 To use the primary UART on the RPI 4B, you will need to plug in serial pins to RPI pins 6 (GND), 8 (GPIO 14/TXD) and 10 (GPIO 15/RXD). 
+Pin layout available [here](https://pinout.xyz/pinout/uart).
 If you want to see the serial output on your computer, you will require a serial-to-USB adapter; plug in the serial pins to the RPI as above, 
 plug in the usb to your computer, verify the adapter is recognised as a COM port with valid drivers, and then run a monitoring program (for example PUTTY).<br>
 
@@ -112,6 +113,7 @@ go 0x10000000
 ```
 
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
 
 
 
