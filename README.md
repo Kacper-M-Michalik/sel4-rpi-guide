@@ -9,20 +9,22 @@ Additional details can be found at: https://docs.sel4.systems/Hardware/
 Building and running a sel4 based system requires a number of steps, here we go through all the steps to see a sel4 system run on a RPI 4B 4GB, similiar if not identical steps are done on other RPI platforms.
 
 ## Building sel4 Images
-sel4/Microkit need to know certain information about the target platform at compile time (e.g. memory size), as such when building sel4 based images (programs to run on your RPI), you need to select the correct platform or platform settings.
+First you need to build any sel4 based programs/systems you want to run, for running on bare metal, correct builds should result in a raw image file (.img)
+<br>
 
-If you are building the sel4 microkernel itself, the minimal arguments are below, as seen in this sel4Test build step for a RPI4B 4GB:
-```bash
-../init-build.sh -DPLATFORM=rpi4 -DAARCH64=1 -DRPI4_MEMORY=4096
-```
+sel4/Microkit need to know certain information about the target platform at compile time (e.g. memory size), as such when building sel4 based images, you need to select the correct platform or platform settings.
 
-If you are building Microkit based projects, Microkit leaves the build system entirely to the user, so you will need to read the project build instructions, but common convention will have your build arguments look like this:
+If your project is building the sel4 microkernel itself, consult the following sites regarding the sel4 build system and correct platform arguments:
+- https://docs.sel4.systems/Hardware/Rpi4.html
+- https://docs.sel4.systems/projects/buildsystem/
+
+If you are building Microkit based projects, Microkit builds sel4 for you with the appropriate settings; but leaves the rest of the build system entirely to the user, so consult your projects build instructions, but common convention will have your build arguments look like this:
 ```bash
 make BUILD_DIR=build MICROKIT_BOARD=rpi4b_4gb MICROKIT_CONFIG=debug MICROKIT_SDK=./../microkit-sdk-2.0.1
 ```
-Note that you only need to select the correct MICROKIT_BOARD, Microkit builds sel4 for you with appropriate settings.
-The result of building a Microkit system should be an image (.img) file, which can be used below.
+Note that you only need to select the correct MICROKIT_BOARD.
 
+# Raspberry Pi Setup
 ## Filesystem
 Once you have built the image(s) you want to run, you will need to setup the correct files on a SD card, which the RPI will use to boot.
 
@@ -110,6 +112,7 @@ go 0x10000000
 ```
 
 If you have followed all the steps correctly, you should now see output from your image, this will typically be sel4 setup info, followed by your program output. 
+
 
 
 
